@@ -10,7 +10,7 @@ Describe "Executable" {
 		[System.Management.Automation.Language.ScriptBlockAst]$script=$null
 		$script = [System.Management.Automation.Language.Parser]::ParseInput('function dummy {}',  [ref]$tokens, [ref]$errors)
 		It "Creatable" {
-			New-Executable 'script' $script | should not Be $null
+			New-Executable 'script' $script $null | should not Be $null
 		}
 	}
 	Context "Executable props" {
@@ -20,7 +20,7 @@ Describe "Executable" {
 		$script = [System.Management.Automation.Language.Parser]::ParseInput('function dummy {}',  [ref]$tokens, [ref]$errors)
 		[System.Management.Automation.Language.FunctionDefinitionAst]$function = $null
 		$function = $script.EndBlock.Statements[0]
-		$fnEx = New-Executable 'dummy' $function
+		$fnEx = New-Executable 'dummy' $function $null
 		It "Function name" { 
 			$fnEx.Name | should Be 'dummy' 
 		}

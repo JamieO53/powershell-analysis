@@ -8,12 +8,12 @@ class Executables {
 		[System.Management.Automation.Language.ParseError[]]$errors=$null
 		[System.Management.Automation.Language.ScriptBlockAst]$script=$null
 		$script=[System.Management.Automation.Language.Parser]::ParseFile($path, [ref]$tokens, [ref]$errors)
-		$this.AddExecutable($this.ScriptName, $script)
+		$container = $this.AddExecutable($this.ScriptName, $script, $null)
         $fns = $script.FindAll({ param($ast) ($ast.GetType().Name -eq 'FunctionDefinitionAst')}, $false)
         $fns |
             foreach {
 		        if (-not $this.Contains($_.Name)) {
-                     $this.AddExecutable($_.Name, $_)
+                     $this.AddExecutable($_.Name, $_, $container)
 		        } else { Write-Host "$($_.Name) already exists" }
             }
         $this.ex.Values |
@@ -21,8 +21,8 @@ class Executables {
                 $this.FindExecutableReferences($_)
             }
 	}
-    [Executable]AddExecutable($name, [System.Management.Automation.Language.Ast]$ast) {
-		[Executable]$executable = [Executable]::New($name,$ast)
+    [Executable]AddExecutable($name, [System.Management.Automation.Language.Ast]$ast, [Executable]$container) {
+		[Executable]$executable = [Executable]::New($name,$ast,$container)
 		$this.ex.Add($name,$executable)
 		return $executable
 	}
