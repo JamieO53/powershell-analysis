@@ -1,14 +1,10 @@
 $SolutionFolder = Split-Path -Path $MyInvocation.MyCommand.Path
 $SolutionPath = ls "$SolutionFolder\*.sln"
 $modules = @{
-	GitExtension="$SolutionFolder\NuGetSharedPacker\bin\Debug\NuGetSharedPacker\GitExtension.psd1"
-	VSTSExtension="$SolutionFolder\NuGetSharedPacker\bin\Debug\NuGetSharedPacker\VSTSExtension.psd1"
-	NuGetShared="$SolutionFolder\NugetShared\bin\Debug\NuGetShared\NuGetShared.psd1"
-	NuGetSharedPacker="$SolutionFolder\NugetSharedPacker\bin\Debug\NuGetSharedPacker\NuGetSharedPacker.psd1"
-	NuGetDbPacker="$SolutionFolder\NuGetDbPacker\bin\Debug\NuGetDbPacker\NuGetDbPacker.psd1"
-	NuGetProjectPacker="$SolutionFolder\NuGetProjectPacker\bin\Debug\NuGetProjectPacker\NuGetProjectPacker.psd1"
-	DbSolutionBuilder="$SolutionFolder\DbSolutionBuilder\bin\Debug\DbSolutionBuilder\DbSolutionBuilder.psd1"
+	AnalyzeExecutables="$SolutionFolder\AnalyzeExecutables\bin\Debug\AnalyzeExecutables"
+	NuGetShared="$SolutionFolder\..\..\nuget-for-sql-projects\NugetDbTools\NugetShared\bin\Debug\NuGetShared\NuGetShared.psm1"
 }
+
 if (-not (Get-Module NuGetShared)) {
 	Import-Module $modules['NuGetShared']
 }
@@ -24,8 +20,9 @@ $failCount = 0
 $renderHtml = $true
 
 Get-PowerShellProjects -SolutionPath $SolutionPath | % {
-	Remove-Module Nuget*,*Extension,TestUtils,DbSolutionBuilder -ErrorAction SilentlyContinue
-	"GitExtension","VSTSExtension","NuGetShared","NuGetSharedPacker" | % {
+# "AnalyzeExecutables" | % {
+	Remove-Module AnalyzeExecutables -ErrorAction SilentlyContinue
+	"AnalyzeExecutables" | % {
 		Import-Module "$($modules[$_])"
 	}
 	$projectFolder = Split-Path "$SolutionFolder\$($_.ProjectPath)"
@@ -70,7 +67,7 @@ Get-PowerShellProjects -SolutionPath $SolutionPath | % {
 		if (Test-Path variable:\global:testing) {
 			$Global:testing = $false
 		}
-		Remove-Module Nuget*,*Extension,TestUtils,DbSolutionBuilder -ErrorAction SilentlyContinue
+		Remove-Module PowerShellAnalyzer -ErrorAction SilentlyContinue
 	}
 }
 $total = @{Name='Total'}
@@ -88,10 +85,10 @@ $allTests = @"
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
-    <title>NuGetDbTools Tests</title>
+    <title>PowerShell Analyzer Tests</title>
   </head>
   <body>
-	<h1>NuGetDbTools test results</h1>
+	<h1>PowerShell Analyzer test results</h1>
 	<table>
 		<tr>
 			<thead>
