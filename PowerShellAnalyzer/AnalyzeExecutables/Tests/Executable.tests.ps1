@@ -1,7 +1,4 @@
-﻿if (Get-Module AnalyzeExecutables -All) {
-	Remove-Module AnalyzeExecutables
-}
-Import-Module "$PSScriptRoot\..\bin\Debug\AnalyzeExecutables\AnalyzeExecutables.psm1"
+﻿using module AnalyzeExecutables
 
 Describe "Executable" {
 	Context "Exists" {
@@ -10,7 +7,7 @@ Describe "Executable" {
 		[System.Management.Automation.Language.ScriptBlockAst]$script=$null
 		$script = [System.Management.Automation.Language.Parser]::ParseInput('function dummy {}',  [ref]$tokens, [ref]$errors)
 		It "Creatable" {
-			New-Executable 'script' $script $null | should not Be $null
+			[Executable]::new('script', $script, $null) | should not Be $null
 		}
 	}
 	Context "Executable props" {
@@ -20,7 +17,7 @@ Describe "Executable" {
 		$script = [System.Management.Automation.Language.Parser]::ParseInput('function dummy {}',  [ref]$tokens, [ref]$errors)
 		[System.Management.Automation.Language.FunctionDefinitionAst]$function = $null
 		$function = $script.EndBlock.Statements[0]
-		$fnEx = New-Executable 'dummy' $function $null
+		$fnEx = [Executable]::new('dummy', $function, $null)
 		It "Function name" { 
 			$fnEx.Name | should Be 'dummy' 
 		}
@@ -35,6 +32,9 @@ Describe "Executable" {
 		}
 		It "Function referenced by" {
 			$fnEx.ReferencedBy.Count | should Be 0
+		}
+		It "Function text" {
+			$fnEx.Text() | should Be 'function dummy {}'
 		}
 	}
 }

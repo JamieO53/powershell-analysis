@@ -30,8 +30,14 @@ Get-PowerShellProjects -SolutionPath $SolutionPath | % {
 	if (Test-Path "$projectFolder\Tests")
 	{
 		pushd "$projectFolder\Tests"
-		$testResult = Invoke-Pester "$projectFolder\Tests" -OutputFile "$SolutionFolder\TestResults\$($_.Project).xml" -OutputFormat NUnitXml -PassThru -EnableExit
-		$failCount = $failCount + $testResult.FailedCount
+		$saveModulePath = $env:PSModulePath
+		try {
+			$env:PSModulePath = "$projectFolder\bin;$env:PSModulePath"
+			$testResult = Invoke-Pester "$projectFolder\Tests" -OutputFile "$SolutionFolder\TestResults\$($_.Project).xml" -OutputFormat NUnitXml -PassThru -EnableExit
+			$failCount = $failCount + $testResult.FailedCount
+		} finally {
+			$env:PSModulePath = $saveModulePath
+		}
 		popd
 		$statistic = New-Object -TypeName PSObject -Property @{
 			Name=$testName;

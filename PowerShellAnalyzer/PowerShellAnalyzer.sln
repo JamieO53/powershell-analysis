@@ -1,19 +1,22 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.28803.352
+# Visual Studio 15
+VisualStudioVersion = 15.0.28307.572
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{F5034706-568F-408A-B7B3-4D38C6DB8A32}") = "AnalyzeExecutables", "AnalyzeExecutables\AnalyzeExecutables.pssproj", "{6CAFC0C6-A428-4D30-A9F9-700E829FEA51}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{9C4C3843-FF48-4DB0-8D72-7D3B9F72AB8F}"
 	ProjectSection(SolutionItems) = preProject
 		BuildAll.ps1 = BuildAll.ps1
+		Initialize.ps1 = Initialize.ps1
 		PackageAll.ps1 = PackageAll.ps1
 		PackageSequence.psd1 = PackageSequence.psd1
 		TestAll.ps1 = TestAll.ps1
 	EndProjectSection
 EndProject
 Project("{F5034706-568F-408A-B7B3-4D38C6DB8A32}") = "PowershellBuilder", "PowershellBuilder\PowershellBuilder.pssproj", "{F4A291E6-845C-4469-886B-BBBA24B5541D}"
+EndProject
+Project("{F5034706-568F-408A-B7B3-4D38C6DB8A32}") = "ExtractObjects", "ExtractObjects\ExtractObjects.pssproj", "{1A8F9DA9-6021-4B67-8B2F-515BF635243F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -29,6 +32,10 @@ Global
 		{F4A291E6-845C-4469-886B-BBBA24B5541D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F4A291E6-845C-4469-886B-BBBA24B5541D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F4A291E6-845C-4469-886B-BBBA24B5541D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1A8F9DA9-6021-4B67-8B2F-515BF635243F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1A8F9DA9-6021-4B67-8B2F-515BF635243F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1A8F9DA9-6021-4B67-8B2F-515BF635243F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1A8F9DA9-6021-4B67-8B2F-515BF635243F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

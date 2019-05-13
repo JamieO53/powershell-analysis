@@ -29,3 +29,8 @@ $cfg.Dependents | % {
 		copy "$ProjectDir\bin\Debug\$ProjectName\*" "$SolutionDir\$_\bin\Debug\$_"
 	}
 }
+if (Get-Module $cfg.ProjectName -All) {
+	Remove-Module $cfg.ProjectName
+}
+Import-Module "$ProjectDir\bin\Debug\$ProjectName\$ProjectName.psm1"
+
