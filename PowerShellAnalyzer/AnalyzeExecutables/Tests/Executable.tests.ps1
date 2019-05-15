@@ -1,4 +1,4 @@
-﻿using module AnalyzeExecutables
+﻿using module ..\bin\Debug\AnalyzeExecutables\AnalyzeExecutables.psm1
 
 Describe "Executable" {
 	Context "Exists" {

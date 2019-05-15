@@ -13,7 +13,7 @@ class Executable {
 		$this.References = [System.Collections.Generic.List[Executable]]::new()
 		$this.ReferencedBy = [System.Collections.Generic.List[Executable]]::new()
 		$this.ContainedBy = $container
-		if ($this.TypeName -eq 'ScriptBlockAst') {
+		if (@('ScriptBlockAst', 'TypeDefinitionAst') -contains $this.TypeName) {
 			$this.Contains = [System.Collections.Generic.Dictionary[string,Executable]]::new()
 		}
 		if ($container) {

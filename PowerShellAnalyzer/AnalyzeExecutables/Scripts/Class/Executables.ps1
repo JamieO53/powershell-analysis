@@ -6,14 +6,26 @@ class Executables {
         $this.ScriptName = [System.IO.Path]::GetFileName($path)
 		[System.Management.Automation.Language.Token[]]$tokens=$null
 		[System.Management.Automation.Language.ParseError[]]$errors=$null
-		[System.Management.Automation.Language.ScriptBlockAst]$script=$null
-		$script=[System.Management.Automation.Language.Parser]::ParseFile($path, [ref]$tokens, [ref]$errors)
+        [System.Management.Automation.Language.ScriptBlockAst]$script=$null
+        $script=[System.Management.Automation.Language.Parser]::ParseFile($path, [ref]$tokens, [ref]$errors)
+        if ($errors.Count -gt 0) {
+            $errors |
+                foreach {
+                    Write-Error $_.Message
+                }
+            return
+        }
 		$container = $this.AddExecutable($this.ScriptName, $script, $null)
-        $fns = $script.FindAll({ param($ast) ($ast.GetType().Name -eq 'FunctionDefinitionAst')}, $false)
+        # Todo: Only look at the script statements
+        # Todo: Include TypeDefinitionAst as well - Classes (Check TypeAttributes)
+        # Todo: Use Contains / ContainedBy for member functions (FunctionMemberAst)
+        #$fns = $script.FindAll({ param($ast) ($ast.GetType().Name -eq 'FunctionDefinitionAst')}, $false)
+        $fns = $script.EndBlock.Statements |
+            where { $type = $_.GetType().Name; (@('FunctionDefinitionAst', 'TypeDefinitionAst') -contains $type)}
         $fns |
             foreach {
 		        if (-not $this.Contains($_.Name)) {
-                     $this.AddExecutable($_.Name, $_, $container)
+                    $x = $this.AddExecutable($_.Name, $_, $container)
 		        } else { Write-Host "$($_.Name) already exists" }
             }
         $this.ex.Values |
@@ -23,7 +35,16 @@ class Executables {
 	}
     [Executable]AddExecutable($name, [System.Management.Automation.Language.Ast]$ast, [Executable]$container) {
 		[Executable]$executable = [Executable]::New($name,$ast,$container)
-		$this.ex.Add($name,$executable)
+        $this.ex.Add($name,$executable)
+        if ($executable.TypeName -eq 'TypeDefinitionAst') {
+            [System.Management.Automation.Language.TypeDefinitionAst]$cast = $ast -as [System.Management.Automation.Language.TypeDefinitionAst]
+            $mbrfns = $cast.Members |
+                where { $_.GetType().Name -eq 'FunctionMemberAst'}
+            $mbrfns |
+                foreach {
+                    [Executable]$method = [Executable]::new($_.Name,$_,$executable)
+                }
+        }
 		return $executable
 	}
 	[void]FindExecutableReferences ([Executable]$executable) {
@@ -49,7 +70,7 @@ class Executables {
     }
     [void]FindStatementsReferences([Executable]$executable, [System.Collections.ObjectModel.ReadOnlyCollection[System.Management.Automation.Language.StatementAst]]$statements){
         $statements |
-	        where {($_ -ne $null) -and ($_.GetType().Name -ne 'FunctionDefinitionAst') } |
+	        where {($_ -ne $null) -and (@('FunctionDefinitionAst', 'TypeDefinitionAst') -notcontains $_.GetType().Name)} |
 	        foreach {
 		        $this.FindStatementReferences($executable, $_)
 	        }
