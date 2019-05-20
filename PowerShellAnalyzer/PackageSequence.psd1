@@ -1,3 +1,3 @@
 @{
-	PackageOrder = @('AnalyzeExecutables')
+	PackageOrder = @('AnalyzeExecutables','CallGraph.Graphviz')
 }

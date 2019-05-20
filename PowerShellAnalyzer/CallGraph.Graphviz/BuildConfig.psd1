@@ -3,5 +3,5 @@
 	ProjectType = ''
 	Dependencies = @('')
 	Extensions = @()
-	Dependents = @('CallGraph.Graphviz')
+	Dependents = @('')
 }

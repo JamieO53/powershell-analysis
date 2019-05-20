@@ -2,6 +2,7 @@ $SolutionFolder = Split-Path -Path $MyInvocation.MyCommand.Path
 $SolutionPath = ls "$SolutionFolder\*.sln"
 $modules = @{
 	AnalyzeExecutables="$SolutionFolder\AnalyzeExecutables\bin\Debug\AnalyzeExecutables"
+	'CallGraph.Graphviz'="$SolutionFolder\CallGraph.Graphviz\bin\Debug\CallGraph.Graphviz"
 	NuGetShared="$SolutionFolder\..\..\nuget-for-sql-projects\NugetDbTools\NugetShared\bin\Debug\NuGetShared\NuGetShared.psm1"
 }
 
