@@ -7,10 +7,7 @@ subgraph "clusterMain" {
 "Main" -> "Setup";
 "Main" -> "Body";
 "Body" -> "Part1";
-{ node [shape=octagon]; "Body" }
 "Body" -> { node [shape=octagon]; "Part2" }
-{ node [shape=octagon]; "Part2" }
-{ node [shape=octagon]; "Part2" }
 "Main" -> "Teardown";
 }
 "LegacyScript.ps1" -> "Main";
