@@ -5,15 +5,18 @@
 	[string]$Label
 )
 
-Function References ([string]$head){
+function Out-External ([string]$node) {
+	$prefix = '{ node [shape=octagon]; '
+	$suffix = ' }'
+	"$prefix`"$head`"$suffix"
+}
+function References ([string]$head){
 	$function = $functions.GetExecutable($head)
 	$function.references |
-		where { $_.Name -ne 'Log'} |
+		where { $blocked -notcontains $_.Name } |
 		foreach {
 			if ( $externals -contains $head) {
-				$prefix = '{ node [shape=octagon]; '
-				$suffix = ' }'
-				"$prefix`"$head`"$suffix"
+				Out-External -node $head
 			}
 			else {
 				if ( $externals -contains $_.Name) {
@@ -37,7 +40,8 @@ $scriptFile=$Path
 $scriptName=[System.IO.Path]::GetFileName($Path)
 
 $heads = $GraphHeads
-$externals = if( $ExternalReferences -ne $null) { $ExternalReferences } else { @() }
+$blocked = @('Log')
+$externals = if( $ExternalReferences ) { $ExternalReferences } else { @() }
 
 $functions = .\New-Executables.ps1 -Path $scriptFile
 

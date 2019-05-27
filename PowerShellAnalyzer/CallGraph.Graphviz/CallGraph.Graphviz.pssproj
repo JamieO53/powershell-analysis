@@ -34,8 +34,13 @@
     <Compile Include="BuildConfig.psd1" />
     <Compile Include="CallGraph.Graphviz.psd1" />
     <Compile Include="CallGraph.Graphviz.psm1" />
-    <Compile Include="CallGraph.ps1" />
     <Compile Include="Test.ps1" />
+    <Compile Include="Tests\CallGraph.ps1" />
+    <Compile Include="Tests\Legacy.tests.ps1" />
+    <Compile Include="Tests\LegacyScript.ps1" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Tests\LegacyOutput.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <Target Name="Build" />

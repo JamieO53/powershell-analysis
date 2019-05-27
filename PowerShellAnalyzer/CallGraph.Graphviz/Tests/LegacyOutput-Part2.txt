@@ -1,0 +1,14 @@
+﻿strict digraph "LegacyScript.ps1" {
+compound=true;
+rankdir=LR;
+pencolor=white;
+node [shape=box fontsize=12];
+subgraph "clusterPart2" {
+"Part2" -> "Part2A";
+"Part2" -> "Part2B";
+"Part2B" -> "Part2B1";
+"Part2B" -> "Part2B2";
+}
+fontsize=16
+label="Part2 Test";
+}

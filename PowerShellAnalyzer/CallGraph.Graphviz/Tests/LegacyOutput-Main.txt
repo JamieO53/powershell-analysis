@@ -1,0 +1,19 @@
+﻿strict digraph "LegacyScript.ps1" {
+compound=true;
+rankdir=LR;
+pencolor=white;
+node [shape=box fontsize=12];
+subgraph "clusterMain" {
+"Main" -> "Setup";
+"Main" -> "Body";
+"Body" -> "Part1";
+{ node [shape=octagon]; "Body" }
+"Body" -> { node [shape=octagon]; "Part2" }
+{ node [shape=octagon]; "Part2" }
+{ node [shape=octagon]; "Part2" }
+"Main" -> "Teardown";
+}
+"LegacyScript.ps1" -> "Main";
+fontsize=16
+label="Main Test";
+}
