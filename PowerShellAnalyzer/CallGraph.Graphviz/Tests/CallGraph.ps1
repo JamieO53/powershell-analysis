@@ -5,30 +5,27 @@
 	[string]$Label
 )
 
-function Out-External ([string]$node) {
-	$prefix = '{ node [shape=octagon]; '
-	$suffix = ' }'
-	"$prefix`"$head`"$suffix"
+function Out-ExternalHead ([string]$node) {
+	'{{ node [shape=octagon]; "{0}" }}' -f $node
+}
+function Out-ExternalNode ([string]$head, [string]$node) {
+	'"{0}" -> {{ node [shape=octagon]; "{1}" }}' -f $head, $node
+}
+function Out-Node ([string]$head, [string]$node) {
+	'"$head" -> "$node";' -f $head, $node
 }
 function References ([string]$head){
 	$function = $functions.GetExecutable($head)
 	$function.references |
 		where { $blocked -notcontains $_.Name } |
 		foreach {
-			if ( $externals -contains $head) {
-				Out-External -node $head
-			}
-			else {
+			if ($externals -notcontains $head) {
 				if ( $externals -contains $_.Name) {
-					$prefix = '{ node [shape=octagon]; '
-					$suffix = ' }'
-					"$prefix`"$head`"$suffix"
+					Out-ExternalNode -head $head -node $_.Name
 				}
 				else {
-					$prefix = ''
-					$suffix = ';'
+					Out-Node -head $head -node $_.Name
 				}
-				"`"$head`" -> $prefix`"$($_.Name)`"$suffix"
 				if ($_.Name -ne $head) {
 					References -head $_.Name
 				}
@@ -55,20 +52,16 @@ $heads |
 		$head = $_
 		"subgraph `"cluster$head`" {"
 		if ( $externals -contains $head) {
-			$prefix = '{ node [shape=octagon]; '
-			$suffix = ' }'
-			"$prefix`"$head`"$suffix"
+			Out-ExternalHead -node $head
 		}
 		else {
 			References -head $head
-			$prefix = ''
-			$suffix = ';'
 		}
 		'}'
 		$functions.GetExecutable($head).referencedBy |
-			where { $_.name -eq $scriptName } |
+			where { $_.Name -eq $scriptName } |
 			foreach {
-				"`"$($_.Name)`" -> $prefix`"$head`"$suffix"
+				Out-Node -head $_.Name -node $head
 			}
 	}
 'fontsize=16'
