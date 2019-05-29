@@ -2,6 +2,7 @@
 	[Parameter(Mandatory = $true)][string]$Path,
 	[Parameter(Mandatory = $true)][string[]]$GraphHeads,
 	[string[]]$ExternalReferences,
+	[string[]]$BlockedReferences,
 	[string]$Label
 )
 
@@ -12,7 +13,7 @@ function Out-ExternalNode ([string]$head, [string]$node) {
 	'"{0}" -> {{ node [shape=octagon]; "{1}" }}' -f $head, $node
 }
 function Out-Node ([string]$head, [string]$node) {
-	'"$head" -> "$node";' -f $head, $node
+	'"{0}" -> "{1}";' -f $head, $node
 }
 function References ([string]$head){
 	$function = $functions.GetExecutable($head)
@@ -42,11 +43,13 @@ $externals = if( $ExternalReferences ) { $ExternalReferences } else { @() }
 
 $functions = .\New-Executables.ps1 -Path $scriptFile
 
-"strict digraph `"$scriptName`" {"
-'compound=true;'
-'rankdir=LR;'
-'pencolor=white;'
-'node [shape=box fontsize=12];'
+@"
+strict digraph `"$scriptName`" {
+compound=true;
+rankdir=LR;
+pencolor=white;
+node [shape=box fontsize=12];
+"@
 $heads |
 	foreach {
 		$head = $_
@@ -64,6 +67,8 @@ $heads |
 				Out-Node -head $_.Name -node $head
 			}
 	}
-'fontsize=16'
-"label=`"$Label`";"
-'}'
+@"
+fontsize=16
+label=`"$Label`";
+}
+"@
